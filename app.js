@@ -99,13 +99,15 @@ app.get("/register", (req, res) => {
 });
 
 app.get("/secrets", (req, res) => {
-  if (req.isAuthenticated()) {
-    console.log("req.isAuthenticated()", req.isAuthenticated());
-    res.render("secrets");
-  } else {
-    console.log("req.isAuthenticated()", req.isAuthenticated());
-    res.redirect("/login");
-  }
+  User.find({"secret": {$ne: null}}, (err, foundUsers) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if (foundUsers) {
+        res.render("secrets", {usersWithSecrets: foundUsers});
+      }
+    }
+  });
 });
 
 app.get("/submit", (req, res) => {
